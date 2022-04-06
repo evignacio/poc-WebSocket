@@ -1,0 +1,31 @@
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdnout.com/jquery/"></script>
+
+<script>
+    var socket = new SockJS('http://localhost:8080/entry-point');
+
+    socket.onopen = function() {
+        console.log('open');
+        stompClient = Stomp.over(socket)
+        stompClient.connect({}, onConnected)
+    };
+
+    const onConnected = function() {
+        stompClient.subscribe('/topic/broker')
+        stompClient.send("/app/initials/infos",
+        {},
+        JSON.stringify({idUser: Math.floor(Math.random() * 49)}))
+    };
+
+    socket.onmessage = function(e) {
+        console.log('message', e.data);
+        sock.close();
+    };
+
+    socket.onclose = function() {
+        console.log('close');
+    }; 
+
+    socket.onopen();
+</script>
